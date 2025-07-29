@@ -310,34 +310,7 @@ O projeto está configurado para deploy automático no Netlify.
 - **Custom Events**: Eventos personalizados de negócio
 - **Conversion Funnels**: Análise de funis de conversão
 
-## 📸 Como Adicionar Imagens ao README
 
-Para adicionar imagens que apareçam corretamente no GitHub:
-
-### 1. **Imagens Locais (Recomendado)**
-```markdown
-![Descrição da Imagem](./public/screenshots/nome-da-imagem.png)
-```
-
-### 2. **Imagens com Dimensões Específicas**
-```html
-<img src="./public/screenshots/nome-da-imagem.png" alt="Descrição" width="600"/>
-```
-
-### 3. **Galeria de Imagens**
-```html
-<div align="center">
-  <img src="./public/screenshots/img1.png" width="45%"/>
-  <img src="./public/screenshots/img2.png" width="45%"/>
-</div>
-```
-
-### 📝 Dicas Importantes:
-- Coloque as imagens na pasta `public/screenshots/`
-- Use formatos `.png`, `.jpg` ou `.gif`
-- Mantenha tamanhos de arquivo pequenos (< 1MB)
-- Use nomes descritivos para as imagens
-- Sempre adicione texto alternativo (`alt`)
 
 ---
 
