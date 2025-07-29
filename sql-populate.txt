@@ -1,0 +1,169 @@
+-- Insert mock data into projects table
+INSERT INTO projetos (
+  id,
+  titulo,
+  descricao,
+  tipo,
+  preco,
+  area,
+  imagens,
+  detalhes,
+  especificacoes_tecnicas,
+  areas_internas,
+  inclusos,
+  status,
+  created_at,
+  updated_at
+) VALUES 
+-- Mock Project 1
+(
+  'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+  'Casa Moderna Jardins',
+  'Projeto contemporâneo com design clean e amplos espaços integrados. Ideal para famílias que valorizam conforto e elegância.',
+  'residencial',
+  1250.00,
+  280,
+  '[
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=2075",
+    "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=2075",
+    "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?auto=format&fit=crop&q=80&w=2075"
+  ]',
+  '{
+    "quartos": 4,
+    "suites": 2,
+    "banheiros": 5,
+    "vagas": 3,
+    "closets": 2,
+    "areaGourmet": true,
+    "pavimentos": 2,
+    "andares": 2,
+    "estilo": "Contemporâneo"
+  }',
+  '{
+    "areaTotal": 280,
+    "larguraCasa": 12,
+    "profundidadeCasa": 20,
+    "areaTerreno": 450,
+    "larguraTerreno": 15,
+    "profundidadeTerreno": 30
+  }',
+  '{
+    "sala": 45,
+    "cozinha": 25,
+    "lavanderia": 8,
+    "areaGourmet": 30,
+    "banheiros": 20
+  }',
+  '[
+    "Projeto arquitetônico completo",
+    "Projeto estrutural",
+    "Projeto hidráulico",
+    "Projeto elétrico",
+    "Imagens 3D realistas"
+  ]',
+  'ativo',
+  NOW(),
+  NOW()
+),
+
+-- Mock Project 2
+(
+  'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12',
+  'Residência Minimalista',
+  'Design minimalista com foco em sustentabilidade e aproveitamento de luz natural. Perfeito para terrenos urbanos.',
+  'residencial',
+  980.00,
+  180,
+  '[
+    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=2070",
+    "https://images.unsplash.com/photo-1513584684374-8bab748fbf90?auto=format&fit=crop&q=80&w=2065",
+    "https://images.unsplash.com/photo-1510784722466-f2aa9c52fff6?auto=format&fit=crop&q=80&w=2070"
+  ]',
+  '{
+    "quartos": 3,
+    "suites": 1,
+    "banheiros": 3,
+    "vagas": 2,
+    "closets": 1,
+    "areaGourmet": true,
+    "pavimentos": 1,
+    "andares": 1,
+    "estilo": "Minimalista"
+  }',
+  '{
+    "areaTotal": 180,
+    "larguraCasa": 10,
+    "profundidadeCasa": 18,
+    "areaTerreno": 300,
+    "larguraTerreno": 12,
+    "profundidadeTerreno": 25
+  }',
+  '{
+    "sala": 35,
+    "cozinha": 20,
+    "lavanderia": 6,
+    "areaGourmet": 25,
+    "banheiros": 12
+  }',
+  '[
+    "Projeto completo",
+    "Memorial descritivo",
+    "Projeto de interiores básico",
+    "Renderizações 3D",
+    "Assessoria técnica"
+  ]',
+  'ativo',
+  NOW(),
+  NOW()
+),
+
+-- Mock Project 3
+(
+  'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13',
+  'Centro Empresarial Moderno',
+  'Edifício comercial com design contemporâneo, fachada em vidro e acabamentos premium. Ideal para empresas modernas.',
+  'comercial',
+  3500.00,
+  2000,
+  '[
+    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2070",
+    "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&q=80&w=2069",
+    "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=2069"
+  ]',
+  '{
+    "quartos": 0,
+    "suites": 0,
+    "banheiros": 16,
+    "vagas": 40,
+    "closets": 0,
+    "areaGourmet": true,
+    "pavimentos": 8,
+    "andares": 8,
+    "estilo": "Contemporâneo"
+  }',
+  '{
+    "areaTotal": 2000,
+    "larguraCasa": 25,
+    "profundidadeCasa": 40,
+    "areaTerreno": 1000,
+    "larguraTerreno": 25,
+    "profundidadeTerreno": 40
+  }',
+  '{
+    "sala": 1500,
+    "cozinha": 100,
+    "lavanderia": 50,
+    "areaGourmet": 150,
+    "banheiros": 200
+  }',
+  '[
+    "Projeto arquitetônico completo",
+    "Projeto estrutural",
+    "Projeto de climatização",
+    "Projeto de segurança",
+    "Projeto de automação predial"
+  ]',
+  'ativo',
+  NOW(),
+  NOW()
+);

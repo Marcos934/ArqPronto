@@ -1,0 +1,39 @@
+-- Function to delete all images from storage
+CREATE OR REPLACE FUNCTION delete_all_project_images()
+RETURNS void AS $$
+DECLARE
+    image_url text;
+BEGIN
+    -- Get all image URLs from projects
+    FOR image_url IN 
+        SELECT json_array_elements_text(imagens::json)
+        FROM projetos
+    LOOP
+        -- Delete each image from storage
+        DELETE FROM storage.objects
+        WHERE bucket_id = 'images'
+        AND name LIKE '%' || substring(image_url from '/([^/]+)$') || '%';
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Execute image deletion function
+SELECT delete_all_project_images();
+
+-- Delete all projects
+DELETE FROM projetos;
+
+-- Reset sequences
+ALTER SEQUENCE IF EXISTS projetos_id_seq RESTART WITH 1;
+
+-- Clean up storage bucket (remove any orphaned files)
+DELETE FROM storage.objects
+WHERE bucket_id = 'images';
+
+-- Reset all promotional and featured flags
+UPDATE projetos
+SET promocao_ativa = false,
+    preco_promocional = NULL,
+    promocao_inicio = NULL,
+    promocao_fim = NULL,
+    destaque = false;

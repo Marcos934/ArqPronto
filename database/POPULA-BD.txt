@@ -1,0 +1,38 @@
+-- Insert sample promotional project
+INSERT INTO projetos (
+  titulo,
+  descricao,
+  tipo,
+  preco,
+  preco_original,
+  preco_promocional,
+  promocao_ativa,
+  promocao_inicio,
+  promocao_fim,
+  destaque,
+  area,
+  imagens,
+  detalhes,
+  especificacoes_tecnicas,
+  areas_internas,
+  inclusos,
+  status
+) VALUES (
+  'Casa Moderna Vista Mar',
+  'Projeto contemporâneo com vista privilegiada',
+  'residencial',
+  1250.00,
+  1250.00,
+  1000.00,
+  true,
+  CURRENT_TIMESTAMP,
+  CURRENT_TIMESTAMP + INTERVAL '30 days',
+  true,
+  280,
+  '["https://images.unsplash.com/photo-1600596542815-ffad4c1539a9"]',
+  '{"quartos":4,"suites":2,"banheiros":5,"vagas":3,"closets":2,"areaGourmet":true,"pavimentos":2,"andares":2,"estilo":"Contemporâneo"}',
+  '{"areaTotal":280,"larguraCasa":12,"profundidadeCasa":20,"areaTerreno":450,"larguraTerreno":15,"profundidadeTerreno":30}',
+  '{"sala":45,"cozinha":25,"lavanderia":8,"areaGourmet":30,"banheiros":20}',
+  '["Projeto arquitetônico completo","Projeto estrutural","Projeto hidráulico","Projeto elétrico"]',
+  'ativo'
+);

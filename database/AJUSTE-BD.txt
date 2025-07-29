@@ -1,0 +1,18 @@
+-- Add missing columns to projetos table
+ALTER TABLE projetos
+ADD COLUMN IF NOT EXISTS preco_original DECIMAL(10,2),
+ADD COLUMN IF NOT EXISTS preco_promocional DECIMAL(10,2),
+ADD COLUMN IF NOT EXISTS promocao_ativa BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS promocao_inicio TIMESTAMPTZ,
+ADD COLUMN IF NOT EXISTS promocao_fim TIMESTAMPTZ,
+ADD COLUMN IF NOT EXISTS destaque BOOLEAN DEFAULT FALSE;
+
+-- Update existing records to set preco_original
+UPDATE projetos 
+SET preco_original = preco 
+WHERE preco_original IS NULL;
+
+-- Create or update indexes
+CREATE INDEX IF NOT EXISTS idx_projetos_promocao ON projetos (promocao_ativa);
+CREATE INDEX IF NOT EXISTS idx_projetos_destaque ON projetos (destaque);
+CREATE INDEX IF NOT EXISTS idx_projetos_created ON projetos (created_at);

@@ -1,0 +1,131 @@
+-- Enable required extensions
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Create storage bucket for project images
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('images', 'images', true);
+
+-- Create storage policies
+CREATE POLICY "Allow authenticated users to upload images"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'images' AND
+  (storage.foldername(name))[1] = 'project-images'
+);
+
+CREATE POLICY "Allow public to view images"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'images');
+
+CREATE POLICY "Allow authenticated users to delete images"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'images');
+
+-- Create projects table
+CREATE TABLE IF NOT EXISTS projetos (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  titulo TEXT NOT NULL,
+  descricao TEXT NOT NULL,
+  tipo TEXT NOT NULL CHECK (tipo IN ('residencial', 'comercial')),
+  preco DECIMAL(10,2) NOT NULL,
+  preco_original DECIMAL(10,2),
+  preco_promocional DECIMAL(10,2),
+  promocao_ativa BOOLEAN DEFAULT FALSE,
+  promocao_inicio TIMESTAMPTZ,
+  promocao_fim TIMESTAMPTZ,
+  destaque BOOLEAN DEFAULT FALSE,
+  area DECIMAL(10,2) NOT NULL,
+  imagens JSONB NOT NULL DEFAULT '[]',
+  detalhes JSONB NOT NULL,
+  especificacoes_tecnicas JSONB NOT NULL,
+  areas_internas JSONB NOT NULL,
+  inclusos JSONB NOT NULL DEFAULT '[]',
+  status TEXT DEFAULT 'ativo' CHECK (status IN ('ativo', 'inativo')),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Create indexes for better performance
+CREATE INDEX IF NOT EXISTS idx_projetos_tipo ON projetos (tipo);
+CREATE INDEX IF NOT EXISTS idx_projetos_status ON projetos (status);
+CREATE INDEX IF NOT EXISTS idx_projetos_promocao ON projetos (promocao_ativa, promocao_inicio, promocao_fim);
+CREATE INDEX IF NOT EXISTS idx_projetos_destaque ON projetos (destaque);
+CREATE INDEX IF NOT EXISTS idx_projetos_created ON projetos (created_at);
+
+-- Create function to handle automatic updated_at
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Create trigger for updated_at
+CREATE TRIGGER update_projetos_updated_at
+    BEFORE UPDATE ON projetos
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Create function to handle promotion dates and prices
+CREATE OR REPLACE FUNCTION handle_promotion()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.promocao_ativa = true THEN
+        -- Store original price if not set
+        IF NEW.preco_original IS NULL THEN
+            NEW.preco_original := NEW.preco;
+        END IF;
+        
+        -- Set promotional price if not set (20% discount by default)
+        IF NEW.preco_promocional IS NULL THEN
+            NEW.preco_promocional := NEW.preco * 0.8;
+        END IF;
+    ELSE
+        -- Clear promotion fields when inactive
+        NEW.preco_promocional := NULL;
+        NEW.promocao_inicio := NULL;
+        NEW.promocao_fim := NULL;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for promotion handling
+CREATE TRIGGER handle_promotion_trigger
+    BEFORE INSERT OR UPDATE ON projetos
+    FOR EACH ROW
+    EXECUTE FUNCTION handle_promotion();
+
+-- Create function to clean up old images
+CREATE OR REPLACE FUNCTION cleanup_old_images()
+RETURNS TRIGGER AS $$
+DECLARE
+    old_image text;
+BEGIN
+    IF OLD.imagens IS NOT NULL AND NEW.imagens IS DISTINCT FROM OLD.imagens THEN
+        -- Loop through old images that are not in new images
+        FOR old_image IN 
+            SELECT json_array_elements_text(OLD.imagens::json)
+            EXCEPT
+            SELECT json_array_elements_text(NEW.imagens::json)
+        LOOP
+            -- Delete from storage bucket
+            DELETE FROM storage.objects
+            WHERE bucket_id = 'images'
+            AND name LIKE '%' || substring(old_image from '/([^/]+)$') || '%';
+        END LOOP;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for image cleanup
+CREATE TRIGGER cleanup_old_images_trigger
+    AFTER UPDATE ON projetos
+    FOR EACH ROW
+    EXECUTE FUNCTION cleanup_old_images();

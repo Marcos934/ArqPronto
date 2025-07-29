@@ -1,0 +1,12 @@
+-- Reset promotional fields
+UPDATE projetos
+SET promocao_ativa = FALSE,
+    preco_promocional = NULL,
+    promocao_inicio = NULL,
+    promocao_fim = NULL,
+    destaque = FALSE;
+
+-- Reset prices to original values
+UPDATE projetos
+SET preco = preco_original
+WHERE preco_original IS NOT NULL;
